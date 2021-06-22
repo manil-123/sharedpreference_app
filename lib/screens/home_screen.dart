@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sharedpreferences_app/models/model.dart';
+import 'package:sharedpreferences_app/services/preferences_service.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,6 +12,23 @@ class _HomeScreenState extends State<HomeScreen> {
   var _selectedGender = Gender.FEMALE;
   var _selectedLanguage = Set<ProgrammingLanguage>();
   var _isEmployed = false;
+  final _preferencesService = PreferencesService();
+
+  void _populateFields() async {
+    final settings = await _preferencesService.getSettings();
+    setState(() {
+      _userNameController.text = settings.username;
+      _selectedGender = settings.gender;
+      _selectedLanguage = settings.programmingLanguages;
+      _isEmployed = settings.isEmployed;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _populateFields();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,10 +118,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           TextButton(
             child: Text('Save Settings'),
-            onPressed: () {},
+            onPressed: _saveSettings,
           )
         ],
       ),
     );
+  }
+
+  void _saveSettings() {
+    final newSettings = Settings(
+        username: _userNameController.text,
+        gender: _selectedGender,
+        programmingLanguages: _selectedLanguage,
+        isEmployed: _isEmployed);
+    print(newSettings);
+    _preferencesService.saveSettings(newSettings);
   }
 }
