@@ -1,6 +1,6 @@
 # sharedpreferences_app
 
-A new Flutter application.
+Using SharedPreference to save settings and edit it.
 
 ## Getting Started
 
